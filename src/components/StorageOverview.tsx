@@ -36,7 +36,7 @@ export const StorageOverview = ({ categories, totalUsed, totalAvailable }: Stora
             return (
               <div
                 key={category.id}
-                className={`storage-segment bg-${category.color} ${index === 0 ? 'rounded-l-full' : ''}`}
+                className={`storage-segment ${category.color} ${index === 0 ? 'rounded-l-full' : ''} ${index === categories.length - 1 ? 'rounded-r-full' : ''}`}
                 style={{ width: `${categoryPercentage}%` }}
               />
             );
@@ -58,8 +58,8 @@ export const StorageOverview = ({ categories, totalUsed, totalAvailable }: Stora
           
           return (
             <div key={category.id} className="text-center">
-              <div className={`inline-flex p-2 rounded-lg bg-${category.color}/10 mb-2`}>
-                <Icon className={`h-5 w-5 text-${category.color}`} />
+              <div className="inline-flex p-2 rounded-lg mb-2" style={{ backgroundColor: `hsl(var(--${category.color.replace('storage-', '')})) / 0.1` }}>
+                <Icon className="h-5 w-5" style={{ color: `hsl(var(--${category.color.replace('storage-', '')}))` }} />
               </div>
               <p className="text-sm font-medium text-foreground">{category.name}</p>
               <p className="text-xs text-muted-foreground">{formatBytes(category.totalSize)}</p>

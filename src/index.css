@@ -125,11 +125,36 @@
 @layer components {
   /* Storage progress bars */
   .storage-bar {
-    @apply relative h-2 bg-muted rounded-full overflow-hidden;
+    @apply relative h-2 bg-muted rounded-full overflow-hidden flex;
   }
   
   .storage-segment {
     @apply h-full transition-all duration-500 ease-out;
+  }
+  
+  /* Storage category colors */
+  .storage-documents {
+    background-color: hsl(var(--documents));
+  }
+  
+  .storage-photos {
+    background-color: hsl(var(--photos));
+  }
+  
+  .storage-videos {
+    background-color: hsl(var(--videos));
+  }
+  
+  .storage-music {
+    background-color: hsl(var(--music));
+  }
+  
+  .storage-presentations {
+    background-color: hsl(var(--presentations));
+  }
+  
+  .storage-archives {
+    background-color: hsl(var(--archives));
   }
   
   /* Category cards */

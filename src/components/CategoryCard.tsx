@@ -15,8 +15,8 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
       onClick={onClick}
     >
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-xl bg-${category.color}/10`}>
-          <Icon className={`h-6 w-6 text-${category.color}`} />
+        <div className="p-3 rounded-xl" style={{ backgroundColor: `hsl(var(--${category.color.replace('storage-', '')})) / 0.1` }}>
+          <Icon className="h-6 w-6" style={{ color: `hsl(var(--${category.color.replace('storage-', '')}))` }} />
         </div>
         <div className="text-right">
           <p className="text-sm text-muted-foreground">{category.fileCount} files</p>
@@ -29,17 +29,6 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
           {category.name}
         </h3>
         
-        {/* Recent Files Preview */}
-        <div className="space-y-2">
-          {category.recentFiles.slice(0, 3).map((file) => (
-            <div key={file.id} className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground truncate flex-1 mr-2">{file.name}</span>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                {formatBytes(file.size)}
-              </span>
-            </div>
-          ))}
-        </div>
       </div>
       
       {/* Usage Bar */}
@@ -49,8 +38,8 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
         </div>
         <div className="storage-bar">
           <div 
-            className={`storage-segment bg-${category.color}`}
-            style={{ width: '70%' }} // This would be calculated based on actual usage
+            className={`storage-segment ${category.color} rounded-full`}
+            style={{ width: `${Math.min((category.totalSize / (10 * 1024 * 1024 * 1024)) * 100, 100)}%` }}
           />
         </div>
       </div>
