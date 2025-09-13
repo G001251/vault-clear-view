@@ -55,8 +55,8 @@ export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }
               </Button>
               
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg bg-${category.color}/10`}>
-                  <Icon className={`h-6 w-6 text-${category.color}`} />
+                <div className="p-2 rounded-lg" style={{ backgroundColor: `hsl(var(--${category.color.replace('storage-', '')})) / 0.1` }}>
+                  <Icon className="h-6 w-6" style={{ color: `hsl(var(--${category.color.replace('storage-', '')}))` }} />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">{category.name}</h1>
@@ -105,7 +105,7 @@ export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }
               <div className="flex items-center gap-3">
                 <div className="storage-bar flex-1">
                   <div 
-                    className={`storage-segment bg-${category.color}`}
+                    className={`storage-segment ${category.color} rounded-full`}
                     style={{ width: `${usagePercentage}%` }}
                   />
                 </div>
@@ -116,33 +116,22 @@ export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }
         </div>
 
         {/* Files Grid */}
-        <div className="bg-card rounded-2xl border border-border/50 shadow-md overflow-hidden">
-          <div className="p-6 border-b border-border/50">
-            <h2 className="text-lg font-semibold text-foreground">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-foreground">
               Files {searchQuery && `(${filteredFiles.length} found)`}
             </h2>
           </div>
           
-          <div className="divide-y divide-border/50">
+          <div className="file-grid">
             {filteredFiles.map((file) => (
               <div 
                 key={file.id} 
-                className="p-4 hover:bg-surface/50 smooth-transition group cursor-pointer"
+                className="bg-card rounded-2xl p-6 border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 group animate-fade-in"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 flex-1 min-w-0">
-                    <div className={`p-2 rounded-lg bg-${category.color}/10`}>
-                      <Icon className={`h-5 w-5 text-${category.color}`} />
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                        {file.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {formatBytes(file.size)} • Modified {file.dateModified}
-                      </p>
-                    </div>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 rounded-xl" style={{ backgroundColor: `hsl(var(--${category.color.replace('storage-', '')})) / 0.1` }}>
+                    <Icon className="h-6 w-6" style={{ color: `hsl(var(--${category.color.replace('storage-', '')}))` }} />
                   </div>
                   
                   <DropdownMenu>
@@ -150,7 +139,7 @@ export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }
                       <Button 
                         variant="ghost" 
                         size="icon"
-                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
                       >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
@@ -170,6 +159,29 @@ export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                </div>
+                
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors truncate">
+                    {file.name}
+                  </h3>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span>{formatBytes(file.size)}</span>
+                    <span>{file.dateModified}</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>File size</span>
+                    <span>{formatBytes(file.size)}</span>
+                  </div>
+                  <div className="storage-bar">
+                    <div 
+                      className={`storage-segment ${category.color} rounded-full`}
+                      style={{ width: `${Math.min((file.size / (50 * 1024 * 1024)) * 100, 100)}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             ))}
