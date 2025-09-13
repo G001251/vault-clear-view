@@ -170,19 +170,6 @@ export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }
                     <span>{file.dateModified}</span>
                   </div>
                 </div>
-                
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>File size</span>
-                    <span>{formatBytes(file.size)}</span>
-                  </div>
-                  <div className="storage-bar">
-                    <div 
-                      className={`storage-segment ${category.color} rounded-full`}
-                      style={{ width: `${Math.min((file.size / (50 * 1024 * 1024)) * 100, 100)}%` }}
-                    />
-                  </div>
-                </div>
               </div>
             ))}
           </div>
