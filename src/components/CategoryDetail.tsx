@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Category, FileItem } from "./Dashboard";
 import { formatBytes } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Search, MoreHorizontal, Share, Trash2, Edit, FolderOpen } from "lucide-react";
+import { ArrowLeft, Search, MoreHorizontal, Share, Trash2, Edit, FolderOpen, Grid3X3, List } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,7 @@ interface CategoryDetailProps {
 }
 
 export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }: CategoryDetailProps) => {
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const Icon = category.icon;
   
   // Mock extended file list for demonstration
@@ -121,58 +123,133 @@ export const CategoryDetail = ({ category, onBack, searchQuery, setSearchQuery }
             <h2 className="text-2xl font-semibold text-foreground">
               Files {searchQuery && `(${filteredFiles.length} found)`}
             </h2>
+            
+            <div className="flex items-center gap-2 bg-surface rounded-xl p-1">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className="h-8 px-3 rounded-lg"
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="h-8 px-3 rounded-lg"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           
-          <div className="file-grid">
-            {filteredFiles.map((file) => (
-              <div 
-                key={file.id} 
-                className="bg-card rounded-2xl p-6 border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 group animate-fade-in"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="p-3 rounded-xl" style={{ backgroundColor: `hsl(var(--${category.color.replace('storage-', '')})) / 0.1` }}>
-                    <Icon className="h-6 w-6" style={{ color: `hsl(var(--${category.color.replace('storage-', '')}))` }} />
+          {viewMode === 'grid' ? (
+            <div className="file-grid">
+              {filteredFiles.map((file) => (
+                <div 
+                  key={file.id} 
+                  className="bg-card rounded-2xl p-6 border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-1 group animate-fade-in"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-3 rounded-xl" style={{ backgroundColor: `hsl(var(--${category.color.replace('storage-', '')})) / 0.1` }}>
+                      <Icon className="h-6 w-6" style={{ color: `hsl(var(--${category.color.replace('storage-', '')}))` }} />
+                    </div>
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem>
+                          <Share className="h-4 w-4 mr-2" />
+                          Share
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Edit className="h-4 w-4 mr-2" />
+                          Rename
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem>
-                        <Share className="h-4 w-4 mr-2" />
-                        Share
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className="h-4 w-4 mr-2" />
-                        Rename
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors truncate">
-                    {file.name}
-                  </h3>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{formatBytes(file.size)}</span>
-                    <span>{file.dateModified}</span>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors truncate">
+                      {file.name}
+                    </h3>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span>{formatBytes(file.size)}</span>
+                      <span>{file.dateModified}</span>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-card rounded-2xl border border-border/50 shadow-md overflow-hidden">
+              <div className="divide-y divide-border/50">
+                {filteredFiles.map((file) => (
+                  <div 
+                    key={file.id} 
+                    className="p-4 hover:bg-surface/50 smooth-transition group cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="p-2 rounded-lg" style={{ backgroundColor: `hsl(var(--${category.color.replace('storage-', '')})) / 0.1` }}>
+                          <Icon className="h-5 w-5" style={{ color: `hsl(var(--${category.color.replace('storage-', '')}))` }} />
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                            {file.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {formatBytes(file.size)} • Modified {file.dateModified}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem>
+                            <Share className="h-4 w-4 mr-2" />
+                            Share
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Rename
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
           
           {filteredFiles.length === 0 && (
             <div className="p-12 text-center">
