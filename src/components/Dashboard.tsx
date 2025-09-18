@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Search, Upload, User, FolderOpen, FileText, Image, Video, Music, Archive, Presentation } from "lucide-react";
+import { Search, Upload, User, FolderOpen, FileText, Image, Video, Music, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CategoryCard } from "@/components/CategoryCard";
-import { StorageOverview } from "@/components/StorageOverview";
+import { Progress } from "@/components/ui/progress";
 import { CategoryDetail } from "@/components/CategoryDetail";
 
 export interface FileItem {
@@ -31,27 +30,12 @@ const mockCategories: Category[] = [
     id: 'documents',
     name: 'Documents',
     icon: FileText,
-    color: 'storage-documents',
+    color: 'bg-red-500',
     fileCount: 147,
-    totalSize: 2.3 * 1024 * 1024 * 1024, // 2.3 GB
+    totalSize: 225 * 1024 * 1024, // 225 MB
     recentFiles: [
-      { id: '1', name: 'Project Proposal.pdf', size: 12 * 1024 * 1024, dateModified: '2024-01-15', type: 'document' },
+      { id: '1', name: 'The Science of Black', size: 630 * 1024, dateModified: '2024-01-15', type: 'document' },
       { id: '2', name: 'Budget Report.xlsx', size: 8 * 1024 * 1024, dateModified: '2024-01-14', type: 'document' },
-      { id: '3', name: 'Meeting Notes.docx', size: 3 * 1024 * 1024, dateModified: '2024-01-13', type: 'document' },
-    ],
-    files: []
-  },
-  {
-    id: 'photos',
-    name: 'Photos',
-    icon: Image,
-    color: 'storage-photos',
-    fileCount: 1204,
-    totalSize: 8.7 * 1024 * 1024 * 1024, // 8.7 GB
-    recentFiles: [
-      { id: '4', name: 'Vacation_2024.jpg', size: 15 * 1024 * 1024, dateModified: '2024-01-16', type: 'image' },
-      { id: '5', name: 'Team_Photo.png', size: 22 * 1024 * 1024, dateModified: '2024-01-15', type: 'image' },
-      { id: '6', name: 'Product_Shot.jpg', size: 18 * 1024 * 1024, dateModified: '2024-01-14', type: 'image' },
     ],
     files: []
   },
@@ -59,27 +43,25 @@ const mockCategories: Category[] = [
     id: 'videos',
     name: 'Videos',
     icon: Video,
-    color: 'storage-videos',
+    color: 'bg-yellow-500',
     fileCount: 42,
-    totalSize: 15.2 * 1024 * 1024 * 1024, // 15.2 GB
+    totalSize: 100 * 1024 * 1024, // 100 MB
     recentFiles: [
-      { id: '7', name: 'Project Demo.mp4', size: 250 * 1024 * 1024, dateModified: '2024-01-16', type: 'video' },
+      { id: '7', name: 'Unboxing Latest Tech', size: 650 * 1024, dateModified: '2024-01-16', type: 'video' },
       { id: '8', name: 'Training Video.mov', size: 180 * 1024 * 1024, dateModified: '2024-01-12', type: 'video' },
-      { id: '9', name: 'Conference_Recording.mp4', size: 420 * 1024 * 1024, dateModified: '2024-01-10', type: 'video' },
     ],
     files: []
   },
   {
-    id: 'presentations',
-    name: 'Presentations',
-    icon: Presentation,
-    color: 'storage-presentations',
-    fileCount: 28,
-    totalSize: 1.8 * 1024 * 1024 * 1024, // 1.8 GB
+    id: 'images',
+    name: 'Images',
+    icon: Image,
+    color: 'bg-purple-900',
+    fileCount: 1204,
+    totalSize: 277 * 1024 * 1024, // 277 MB
     recentFiles: [
-      { id: '10', name: 'Q4 Results.pptx', size: 45 * 1024 * 1024, dateModified: '2024-01-15', type: 'presentation' },
-      { id: '11', name: 'Product Launch.key', size: 68 * 1024 * 1024, dateModified: '2024-01-13', type: 'presentation' },
-      { id: '12', name: 'Sales Pitch.pptx', size: 32 * 1024 * 1024, dateModified: '2024-01-11', type: 'presentation' },
+      { id: '4', name: 'Test Render C4d', size: 15 * 1024 * 1024, dateModified: '2024-01-16', type: 'image' },
+      { id: '5', name: 'Team_Photo.png', size: 22 * 1024 * 1024, dateModified: '2024-01-15', type: 'image' },
     ],
     files: []
   },
@@ -87,27 +69,11 @@ const mockCategories: Category[] = [
     id: 'music',
     name: 'Music',
     icon: Music,
-    color: 'storage-music',
+    color: 'bg-indigo-600',
     fileCount: 892,
-    totalSize: 4.1 * 1024 * 1024 * 1024, // 4.1 GB
+    totalSize: 138 * 1024 * 1024, // 138 MB
     recentFiles: [
       { id: '13', name: 'Podcast_Episode_12.mp3', size: 85 * 1024 * 1024, dateModified: '2024-01-16', type: 'music' },
-      { id: '14', name: 'Background_Music.wav', size: 120 * 1024 * 1024, dateModified: '2024-01-14', type: 'music' },
-      { id: '15', name: 'Interview_Audio.m4a', size: 95 * 1024 * 1024, dateModified: '2024-01-12', type: 'music' },
-    ],
-    files: []
-  },
-  {
-    id: 'archives',
-    name: 'Archives',
-    icon: Archive,
-    color: 'storage-archives',
-    fileCount: 15,
-    totalSize: 3.4 * 1024 * 1024 * 1024, // 3.4 GB
-    recentFiles: [
-      { id: '16', name: 'Project_Backup.zip', size: 890 * 1024 * 1024, dateModified: '2024-01-15', type: 'archive' },
-      { id: '17', name: 'Old_Documents.rar', size: 560 * 1024 * 1024, dateModified: '2024-01-10', type: 'archive' },
-      { id: '18', name: 'Database_Export.tar.gz', size: 1200 * 1024 * 1024, dateModified: '2024-01-08', type: 'archive' },
     ],
     files: []
   },
@@ -118,7 +84,19 @@ export const Dashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   
   const totalUsed = mockCategories.reduce((sum, cat) => sum + cat.totalSize, 0);
-  const totalAvailable = 50 * 1024 * 1024 * 1024; // 50 GB
+  const totalAvailable = 1024 * 1024 * 1024; // 1024 MB (1 GB)
+  const usedPercentage = (totalUsed / totalAvailable) * 100;
+  
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+    return `${Math.round(bytes / (1024 * 1024))} MB`;
+  };
+
+  const recentFiles = [
+    { id: '1', name: 'The Science of Black', size: 630 * 1024, preview: '🟥', type: 'document' },
+    { id: '2', name: 'Unboxing Latest Tech', size: 650 * 1024, preview: '🔵', type: 'video' },
+    { id: '3', name: 'Test Render C4d', size: 15 * 1024 * 1024, preview: '🟡', type: 'image' },
+  ];
   
   if (selectedCategory) {
     return (
@@ -132,69 +110,152 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card border-b border-border/50 sticky top-0 z-50 backdrop-blur-sm bg-card/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <FolderOpen className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold text-foreground">BlockVault</h1>
+    <div className="min-h-screen bg-gray-50 p-4 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Side - Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Header */}
+            <div className="mb-8">
+              <p className="text-sm text-gray-500 mb-1">File Manager</p>
+              <h1 className="text-3xl font-bold text-gray-900">Hello,</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Morsel</h1>
             </div>
-            
-            <div className="flex-1 max-w-2xl mx-8">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="Search your vault..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 bg-surface border-border/50 focus:border-primary rounded-xl"
-                />
+
+            {/* Category Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              {mockCategories.slice(0, 3).map((category) => {
+                const Icon = category.icon;
+                return (
+                  <div
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`${category.color} rounded-3xl p-6 text-white cursor-pointer hover:scale-105 transition-transform relative overflow-hidden`}
+                  >
+                    <h3 className="text-lg font-semibold mb-1">{category.name}</h3>
+                    <p className="text-white/90 text-sm mb-4">{formatSize(category.totalSize)}</p>
+                    <div className="absolute bottom-4 right-4 opacity-60">
+                      {category.name === 'Documents' && <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center">📁</div>}
+                      {category.name === 'Videos' && <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">🎬</div>}
+                      {category.name === 'Images' && <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center">🖼️</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Storage Analytics */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {formatSize(totalUsed)} / {formatSize(totalAvailable)}
+                  </h3>
+                  <p className="text-gray-500 text-sm">Available Storage</p>
+                </div>
+                <div className="relative w-16 h-16">
+                  <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="#e5e7eb"
+                      strokeWidth="3"
+                    />
+                    <path
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="#ef4444"
+                      strokeWidth="3"
+                      strokeDasharray={`${usedPercentage}, 100`}
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
-            
-            <div className="flex items-center gap-3">
-              <Button className="btn-primary h-12 px-6 rounded-xl">
-                <Upload className="h-5 w-5 mr-2" />
-                Upload
-              </Button>
-              <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-border/50">
-                <User className="h-5 w-5" />
-              </Button>
+
+            {/* Recent Files */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Recent Files</h2>
+                <button className="text-gray-500 text-sm hover:text-gray-700">See All</button>
+              </div>
+              
+              <div className="space-y-3">
+                {recentFiles.map((file) => (
+                  <div key={file.id} className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl ${
+                        file.type === 'document' ? 'bg-red-100' : 
+                        file.type === 'video' ? 'bg-blue-100' : 'bg-yellow-100'
+                      } flex items-center justify-center text-xl`}>
+                        {file.preview}
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{file.name}</h3>
+                        <p className="text-sm text-gray-500">{formatSize(file.size)}</p>
+                      </div>
+                    </div>
+                    <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600">
+                      <MoreHorizontal className="h-5 w-5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Storage Breakdown & Upgrade */}
+          <div className="space-y-6">
+            {/* Storage Breakdown */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm">
+              <div className="mb-4">
+                <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+                  <span>Used Storage</span>
+                  <span>{formatSize(totalUsed)} / {formatSize(totalAvailable)}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+                  <div 
+                    className="bg-gradient-to-r from-red-500 via-yellow-500 via-purple-900 to-indigo-600 h-2 rounded-full" 
+                    style={{ width: `${usedPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                {mockCategories.map((category) => (
+                  <div key={category.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-3 h-3 rounded-full ${category.color}`}></div>
+                      <span className="text-sm text-gray-700">{category.name}</span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">{formatSize(category.totalSize)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Upgrade Storage Card */}
+            <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-3xl p-6 text-white relative overflow-hidden">
+              <div className="relative z-10">
+                <h3 className="text-lg font-semibold mb-2">Want to increase</h3>
+                <h3 className="text-lg font-semibold mb-4">Storage Capacity?</h3>
+                <Button className="bg-white text-orange-500 hover:bg-gray-100 rounded-xl px-6 py-2 font-medium">
+                  Upgrade
+                </Button>
+              </div>
+              <div className="absolute bottom-2 right-2 opacity-30">
+                <div className="w-16 h-16 bg-yellow-400 rounded-2xl flex items-center justify-center text-2xl">
+                  📁
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Storage Overview */}
-        <div className="mb-8">
-          <StorageOverview 
-            categories={mockCategories}
-            totalUsed={totalUsed}
-            totalAvailable={totalAvailable}
-          />
-        </div>
-
-        {/* Categories Grid */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-foreground">File Categories</h2>
-          </div>
-          
-          <div className="file-grid">
-            {mockCategories.map((category) => (
-              <CategoryCard
-                key={category.id}
-                category={category}
-                onClick={() => setSelectedCategory(category)}
-              />
-            ))}
-          </div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 };
