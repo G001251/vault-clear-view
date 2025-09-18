@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Upload, User, FolderOpen, FileText, Image, Video, Music, MoreHorizontal } from "lucide-react";
+import { Search, Upload, User, FolderOpen, FileText, Image, Video, Presentation, FileType, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -10,7 +10,7 @@ export interface FileItem {
   name: string;
   size: number;
   dateModified: string;
-  type: 'document' | 'image' | 'video' | 'music' | 'archive' | 'presentation';
+  type: 'document' | 'image' | 'video' | 'presentation' | 'txt' | 'archive';
   preview?: string;
 }
 
@@ -66,14 +66,28 @@ const mockCategories: Category[] = [
     files: []
   },
   {
-    id: 'music',
-    name: 'Music',
-    icon: Music,
+    id: 'presentations',
+    name: 'Presentations',
+    icon: Presentation,
     color: 'bg-indigo-600',
-    fileCount: 892,
-    totalSize: 138 * 1024 * 1024, // 138 MB
+    fileCount: 28,
+    totalSize: 95 * 1024 * 1024, // 95 MB
     recentFiles: [
-      { id: '13', name: 'Podcast_Episode_12.mp3', size: 85 * 1024 * 1024, dateModified: '2024-01-16', type: 'music' },
+      { id: '9', name: 'Q4 Business Review', size: 25 * 1024 * 1024, dateModified: '2024-01-16', type: 'presentation' },
+      { id: '10', name: 'Project Proposal.pptx', size: 18 * 1024 * 1024, dateModified: '2024-01-15', type: 'presentation' },
+    ],
+    files: []
+  },
+  {
+    id: 'txt',
+    name: 'Text Files',
+    icon: FileType,
+    color: 'bg-green-600',
+    fileCount: 65,
+    totalSize: 12 * 1024 * 1024, // 12 MB
+    recentFiles: [
+      { id: '11', name: 'Meeting Notes.txt', size: 245 * 1024, dateModified: '2024-01-16', type: 'txt' },
+      { id: '12', name: 'Project Requirements.md', size: 1.5 * 1024 * 1024, dateModified: '2024-01-14', type: 'txt' },
     ],
     files: []
   },
@@ -122,26 +136,35 @@ export const Dashboard = () => {
               <h1 className="text-3xl font-bold text-gray-900">Morsel</h1>
             </div>
 
-            {/* Category Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              {mockCategories.slice(0, 3).map((category) => {
-                const Icon = category.icon;
-                return (
-                  <div
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`${category.color} rounded-3xl p-6 text-white cursor-pointer hover:scale-105 transition-transform relative overflow-hidden`}
-                  >
-                    <h3 className="text-lg font-semibold mb-1">{category.name}</h3>
-                    <p className="text-white/90 text-sm mb-4">{formatSize(category.totalSize)}</p>
-                    <div className="absolute bottom-4 right-4 opacity-60">
-                      {category.name === 'Documents' && <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center">📁</div>}
-                      {category.name === 'Videos' && <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">🎬</div>}
-                      {category.name === 'Images' && <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center">🖼️</div>}
+            {/* Category Cards - Vertical Scrollable */}
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">File Categories</h2>
+              <div className="flex flex-col sm:flex-row gap-4 overflow-x-auto sm:overflow-x-scroll pb-4 max-h-[400px] sm:max-h-none overflow-y-auto sm:overflow-y-visible">
+                {mockCategories.map((category) => {
+                  const Icon = category.icon;
+                  return (
+                    <div
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`${category.color} rounded-3xl p-6 text-white cursor-pointer hover:scale-105 transition-transform relative overflow-hidden min-w-[280px] sm:min-w-[220px] flex-shrink-0`}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <Icon className="h-6 w-6" />
+                        <h3 className="text-lg font-semibold">{category.name}</h3>
+                      </div>
+                      <p className="text-white/90 text-sm mb-2">{category.fileCount} files</p>
+                      <p className="text-white/90 text-sm">{formatSize(category.totalSize)}</p>
+                      <div className="absolute bottom-4 right-4 opacity-30">
+                        {category.name === 'Documents' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">📄</div>}
+                        {category.name === 'Videos' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">🎬</div>}
+                        {category.name === 'Images' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">🖼️</div>}
+                        {category.name === 'Presentations' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">📊</div>}
+                        {category.name === 'Text Files' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">📝</div>}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
 
             {/* Storage Analytics */}
