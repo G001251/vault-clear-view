@@ -136,17 +136,17 @@ export const Dashboard = () => {
               <h1 className="text-3xl font-bold text-gray-900">Morsel</h1>
             </div>
 
-            {/* Category Cards - Vertical Scrollable */}
+            {/* Category Cards - Horizontal Scrollable */}
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">File Categories</h2>
-              <div className="flex flex-col sm:flex-row gap-4 overflow-x-auto sm:overflow-x-scroll pb-4 max-h-[400px] sm:max-h-none overflow-y-auto sm:overflow-y-visible">
+              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {mockCategories.map((category) => {
                   const Icon = category.icon;
                   return (
                     <div
                       key={category.id}
                       onClick={() => setSelectedCategory(category)}
-                      className={`${category.color} rounded-3xl p-6 text-white cursor-pointer hover:scale-105 transition-transform relative overflow-hidden min-w-[280px] sm:min-w-[220px] flex-shrink-0`}
+                      className={`${category.color} rounded-3xl p-6 text-white cursor-pointer hover:scale-105 transition-transform relative overflow-hidden min-w-[280px] flex-shrink-0`}
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <Icon className="h-6 w-6" />
@@ -155,11 +155,7 @@ export const Dashboard = () => {
                       <p className="text-white/90 text-sm mb-2">{category.fileCount} files</p>
                       <p className="text-white/90 text-sm">{formatSize(category.totalSize)}</p>
                       <div className="absolute bottom-4 right-4 opacity-30">
-                        {category.name === 'Documents' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">📄</div>}
-                        {category.name === 'Videos' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">🎬</div>}
-                        {category.name === 'Images' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">🖼️</div>}
-                        {category.name === 'Presentations' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">📊</div>}
-                        {category.name === 'Text Files' && <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">📝</div>}
+                        <Icon className="h-8 w-8 opacity-50" />
                       </div>
                     </div>
                   );
